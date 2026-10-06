@@ -16,92 +16,9 @@
     <Filter Include="Resource Files\TileMaps">
       <UniqueIdentifier>{dc66afb6-70ad-4991-b547-01a8c82a787e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SpriteGame">
-      <UniqueIdentifier>{6290ee23-9433-4ab8-ac98-a449edde8825}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Astroid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame\PlayerController.cpp">
-      <Filter>SpriteGame</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame\EnemyController.cpp">
-      <Filter>SpriteGame</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame\FlyingEnemyController.cpp">
-      <Filter>SpriteGame</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame\CharacterBase.cpp">
-      <Filter>SpriteGame</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteGame\Damager.cpp">
-      <Filter>SpriteGame</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Astroid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Boss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame\PlayerController.h">
-      <Filter>SpriteGame</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame\EnemyController.h">
-      <Filter>SpriteGame</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame\FlyingEnemyController.h">
-      <Filter>SpriteGame</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame\CharacterBase.h">
-      <Filter>SpriteGame</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteGame\Damager.h">
-      <Filter>SpriteGame</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Build\Assets\Data\scene.json">

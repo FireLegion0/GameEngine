@@ -45,8 +45,8 @@ int main() {
 	//INITIALIZATION
     Engine::Get().Initialize();
 
-    SpaceGame game;
-    game.Initialize();
+    //SpaceGame game;
+    //game.Initialize();
 
 
     std::vector<Vector2> points;
@@ -70,7 +70,7 @@ int main() {
         Engine::Get().Update();
 
         float dt = Engine::Get().GetTime().GetDeltaTime();
-        game.Update(dt);
+        //game.Update(dt);
 
         if (Engine::Get().GetInput().GetMouseDown(Input::MouseButton::Left)) {
 			if (points.empty()) {
@@ -99,19 +99,19 @@ int main() {
 		}
 
 
-        //RENDER
-        Engine::Get().GetRenderer().SetColor(0.0f, 0.0f, 0.0f);
-        Engine::Get().GetRenderer().Clear();
-
-        //for (int i = 0; i < (int)points.size() - 1; i++) {
-        //    Engine::Get().GetRenderer().SetColor(0.5f, 0.5f, 0.5f); // Set render draw color to green
-        //    Engine::Get().GetRenderer().DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y); // Render a random point
-        //}
-		
-        game.Draw(Engine::Get().GetRenderer());
-        Engine::Get().GetPS().Draw(Engine::Get().GetRenderer());
-
-        Engine::Get().GetRenderer().Present(); // Render the screen
+        ////RENDER
+        //Engine::Get().GetRenderer().SetColor(0.0f, 0.0f, 0.0f);
+        //Engine::Get().GetRenderer().Clear();
+        //
+        ////for (int i = 0; i < (int)points.size() - 1; i++) {
+        ////    Engine::Get().GetRenderer().SetColor(0.5f, 0.5f, 0.5f); // Set render draw color to green
+        ////    Engine::Get().GetRenderer().DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y); // Render a random point
+        ////}
+		//
+        //game.Draw(Engine::Get().GetRenderer());
+        //Engine::Get().GetPS().Draw(Engine::Get().GetRenderer());
+        //
+        //Engine::Get().GetRenderer().Present(); // Render the screen
     }
 
     //SHUTDOWN
