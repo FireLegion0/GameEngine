@@ -2,16 +2,9 @@
 //
 
 #include "Engine.h"
-#include "Player.h"
-#include "Enemy.h"
-#include "Assets.h"
 #include "Core/File.h"
 #include "Renderer/Font.h"
 #include "Renderer/Text.h"
-#include "SpaceGame.h"
-#include "Bullet.h"
-#include "Boss.h"
-#include "Astroid.h"
 
 #include <fmod.hpp>
 
@@ -72,46 +65,13 @@ int main() {
         float dt = Engine::Get().GetTime().GetDeltaTime();
         //game.Update(dt);
 
-        if (Engine::Get().GetInput().GetMouseDown(Input::MouseButton::Left)) {
-			if (points.empty()) {
-				points.push_back(Engine::Get().GetInput().GetMousePosition());
-			}
-            else
-            {
-                Vector2 lastPoint = points.back() - Engine::Get().GetInput().GetMousePosition();
 
-                if (lastPoint.Length() > 30.0f) {
-                    points.push_back(Engine::Get().GetInput().GetMousePosition());
-                }
-            }
-        }
+        //RENDER
+        Engine::Get().GetRenderer().BeginFrame();
 
-		if (Engine::Get().GetInput().GetMousePressed(Input::MouseButton::Right)) {
-			if(!points.empty()) {
-				points.pop_back();
-			}
-		}
-
-		if (Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_C)) {
-            if (!points.empty()) {
-                points.clear();
-            }
-		}
-
-
-        ////RENDER
-        //Engine::Get().GetRenderer().SetColor(0.0f, 0.0f, 0.0f);
-        //Engine::Get().GetRenderer().Clear();
-        //
-        ////for (int i = 0; i < (int)points.size() - 1; i++) {
-        ////    Engine::Get().GetRenderer().SetColor(0.5f, 0.5f, 0.5f); // Set render draw color to green
-        ////    Engine::Get().GetRenderer().DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y); // Render a random point
-        ////}
-		//
-        //game.Draw(Engine::Get().GetRenderer());
-        //Engine::Get().GetPS().Draw(Engine::Get().GetRenderer());
-        //
-        //Engine::Get().GetRenderer().Present(); // Render the screen
+        Engine::Get().GetPS().Draw(Engine::Get().GetRenderer());
+        
+        Engine::Get().GetRenderer().EndFrame(); // Render the screen
     }
 
     //SHUTDOWN
