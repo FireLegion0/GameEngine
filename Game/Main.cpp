@@ -1,0 +1,122 @@
+// Game.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include "Engine.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Assets.h"
+#include "Core/File.h"
+#include "Renderer/Font.h"
+#include "Renderer/Text.h"
+#include "SpaceGame.h"
+#include "Bullet.h"
+#include "Boss.h"
+#include "Astroid.h"
+
+#include <fmod.hpp>
+
+#include <iostream>
+#include <vector>
+#include "SDL3/SDL.h"
+#include "Framework/Scene.h"
+#include <map>
+#include <memory>
+#include <random>
+#include <fstream>
+
+#define TEXT "Hello!\n"
+#define MAX(a, b) ((a > b) ? a : b)
+
+using namespace nu;
+
+std::map<std::string, std::unique_ptr<ICreator>> registry;
+
+int main() {
+	SetWorkingDirectory("assets"); //Keep this at the top of main() to ensure the working directory is set before any assets are loaded
+
+    //return 0;
+    
+    // create audio system
+
+    // load the json data from a file
+    std::string buffer;
+
+
+	//INITIALIZATION
+    Engine::Get().Initialize();
+
+    SpaceGame game;
+    game.Initialize();
+
+
+    std::vector<Vector2> points;
+
+    //MAIN LOOP
+    bool quit = false;
+    while (!quit) {
+
+        //UPDATE
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                quit = true;
+            }
+            if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_ESCAPE) {
+				quit = true;
+            }
+        }
+
+        //ENGINE
+        Engine::Get().Update();
+
+        float dt = Engine::Get().GetTime().GetDeltaTime();
+        game.Update(dt);
+
+        if (Engine::Get().GetInput().GetMouseDown(Input::MouseButton::Left)) {
+			if (points.empty()) {
+				points.push_back(Engine::Get().GetInput().GetMousePosition());
+			}
+            else
+            {
+                Vector2 lastPoint = points.back() - Engine::Get().GetInput().GetMousePosition();
+
+                if (lastPoint.Length() > 30.0f) {
+                    points.push_back(Engine::Get().GetInput().GetMousePosition());
+                }
+            }
+        }
+
+		if (Engine::Get().GetInput().GetMousePressed(Input::MouseButton::Right)) {
+			if(!points.empty()) {
+				points.pop_back();
+			}
+		}
+
+		if (Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_C)) {
+            if (!points.empty()) {
+                points.clear();
+            }
+		}
+
+
+        //RENDER
+        Engine::Get().GetRenderer().SetColor(0.0f, 0.0f, 0.0f);
+        Engine::Get().GetRenderer().Clear();
+
+        //for (int i = 0; i < (int)points.size() - 1; i++) {
+        //    Engine::Get().GetRenderer().SetColor(0.5f, 0.5f, 0.5f); // Set render draw color to green
+        //    Engine::Get().GetRenderer().DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y); // Render a random point
+        //}
+		
+        game.Draw(Engine::Get().GetRenderer());
+        Engine::Get().GetPS().Draw(Engine::Get().GetRenderer());
+
+        Engine::Get().GetRenderer().Present(); // Render the screen
+    }
+
+    //SHUTDOWN
+    Engine::Get().Shutdown();
+
+
+    return 0;
+}
