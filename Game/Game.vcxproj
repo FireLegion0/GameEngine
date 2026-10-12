@@ -190,6 +190,9 @@
     <ProjectReference Include="..\Engine\Engine.vcxproj">
       <Project>{278c6364-610c-4748-ab19-60012fb87950}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Shaders\Shaders.vcxproj">
+      <Project>{1dc1933f-925a-3eb9-ac2e-61b6862b1f0c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Build\Assets\Animations\bat_idle.json" />
@@ -199,14 +202,6 @@
     <None Include="..\Build\Assets\Data\scene.json" />
     <None Include="..\Build\Assets\TileMap\world.json" />
     <None Include="..\README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\Shaders\color.frag.hlsl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="..\Shaders\position.vert.hlsl">
-      <FileType>Document</FileType>
-    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

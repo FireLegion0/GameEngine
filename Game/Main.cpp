@@ -51,7 +51,6 @@ int main() {
     // load the json data from a file
     std::string buffer;
 
-
 	//INITIALIZATION
     Engine::Get().Initialize();
 
