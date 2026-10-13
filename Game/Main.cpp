@@ -22,6 +22,9 @@
 #include <random>
 #include <fstream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #define TEXT "Hello!\n"
 #define MAX(a, b) ((a > b) ? a : b)
 
@@ -32,6 +35,11 @@ namespace nu {
 		float r, g, b, a;
     };
 }
+
+struct vertexUniform
+{
+    glm::mat4 model;
+};
 
 struct Vertex
 {
@@ -88,8 +96,9 @@ int main() {
     //SpaceGame game;
     //game.Initialize();
 
-    float scale = 0.5f;
+    //float scale = 0.5f;
 	Color4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
+    vertexUniform uniform;
 
     std::vector<Vector2> points;
 
@@ -114,16 +123,22 @@ int main() {
         float dt = Engine::Get().GetTime().GetDeltaTime();
         //game.Update(dt);
 
-        scale = sin(Engine::Get().GetTime().GetTime());
-        color.r = sin((Engine::Get().GetTime().GetTime()) * 10.0f) * 0.5f + 0.5f;
+        //scale = sin(Engine::Get().GetTime().GetTime());
+		float time = Engine::Get().GetTime().GetTime();
+        color.r = sin(time * 10.0f) * 0.5f + 0.5f;
 
+        uniform.model = glm::mat4(1.0f);
+        uniform.model = glm::translate(uniform.model, glm::vec3(0.5f, 0.0f, 0.0f));
+        uniform.model = glm::rotate(uniform.model, time, glm::vec3(0.0f, 0.0f, 1.0f));
+        uniform.model = glm::scale(uniform.model, glm::vec3(0.5f, 0.5f, 0.5f));
 
         // RENDER
         Engine::Get().GetRenderer().BeginFrame();
 
         Engine::Get().GetRenderer().SetPipeline(*pipeline);
         Engine::Get().GetRenderer().SetVertexBuffer(*vb);
-        Engine::Get().GetRenderer().SetVertexUniform(0, &scale, sizeof(scale));
+        //Engine::Get().GetRenderer().SetVertexUniform(0, &scale, sizeof(scale));
+        Engine::Get().GetRenderer().SetVertexUniform(0, &uniform, sizeof(uniform));
         Engine::Get().GetRenderer().SetFragmentUniform(0, &color, sizeof(color));
 
         Engine::Get().GetRenderer().Draw(vb->GetVertexCount());
