@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Pipeline.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 #include "Math/Transform.h"
 #include "Math/MathUtils.h"
@@ -225,6 +226,27 @@ namespace nu {
 		);
 	}
 
+	void Renderer::SetIndexBuffer(const IndexBuffer& indexBuffer)
+	{
+		// describe which buffer to bind and where to start reading from
+		SDL_GPUBufferBinding binding{
+			.buffer = indexBuffer.m_gpuBuffer, // the vertex buffer's gpu buffer
+			.offset = 0   // start reading at the beginning of the buffer
+		};
+
+		// bind the vertex buffer to the current render pass with SDL_BindGPUVertexBuffers()
+		// the draw calls that follow read their indices from this buffer
+		// parameters:
+		//   render pass   - the current render pass (m_renderPass)
+		//   bindings      - pointer to the binding above
+		//   Element Size - 16 or 32 bits
+		SDL_BindGPUIndexBuffer(
+			m_gpuRenderPass, 
+			&binding, 
+			SDL_GPU_INDEXELEMENTSIZE_32BIT
+		);
+	}
+
 	void Renderer::Draw(uint32_t vertexCount)
 	{
 		// draw using the currently bound pipeline and vertex buffer with SDL_DrawGPUPrimitives()
@@ -239,6 +261,17 @@ namespace nu {
 			m_gpuRenderPass,
 			vertexCount,
 			1,
+			0,
+			0
+		);
+	}
+
+	void Renderer::DrawIndex(const IndexBuffer& indexBuffer) {
+		SDL_DrawGPUIndexedPrimitives(
+			m_gpuRenderPass,
+			indexBuffer.GetIndexCount(),
+			1,
+			0,
 			0,
 			0
 		);
