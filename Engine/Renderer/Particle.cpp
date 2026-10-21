@@ -45,7 +45,7 @@ namespace nu {
 				// TODO: draw point with particle position
 				//renderer.DrawPoint(particle.position.x, particle.position.y);
 				res_t<Texture> particles = Resources().Get<Texture>("textures/flames.png", Engine::Get().GetRenderer());
-				renderer.DrawTexture(*particles, particle.position.x, particle.position.y, 0.0f, 0.0125f);
+				//renderer.DrawTexture(*particles, particle.position.x, particle.position.y, 0.0f, 0.0125f);
 			}
 		}
 	}

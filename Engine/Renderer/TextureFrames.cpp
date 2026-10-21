@@ -37,8 +37,8 @@ namespace nu {
 			return false;
 		}
 
-		Vector2 textureSize = m_texture->GetSize();
-		m_frameSize = textureSize / Vector2{ m_numCols, m_numRows };
+		//Vector2 textureSize = m_texture->GetSize();
+		//m_frameSize = textureSize / Vector2{ m_numCols, m_numRows };
 
 		return true;
 	}

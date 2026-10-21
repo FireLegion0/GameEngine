@@ -85,10 +85,11 @@ int main() {
     auto ib = std::make_shared<IndexBuffer>();
     ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
 
-    auto model = Resources().Get<Model>("models/suzanne.obj", Engine::Get().GetRenderer());
+    auto model = Resources().Get<Model>("models/spot.obj", Engine::Get().GetRenderer());
+    auto texture = Resources().Get<Texture>("textures/spot_diffuse.png", Engine::Get().GetRenderer());
 
     auto vshader = Resources().Get<nu::Shader>("shaders/unlit.vert", Engine::Get().GetRenderer(), 1);
-    auto fshader = Resources().Get<nu::Shader>("shaders/unlit.frag", Engine::Get().GetRenderer(), 1);
+    auto fshader = Resources().Get<nu::Shader>("shaders/unlit.frag", Engine::Get().GetRenderer(), 1, 1);
 
     auto pipeline = std::make_shared<Pipeline>();
 
@@ -107,7 +108,7 @@ int main() {
     //game.Initialize();
 
     //float scale = 0.5f;
-	Color4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	Color4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     vertexUniform uniform;
 	glm::vec3 cameraPos{ 0.0f, 0.0f, 5.0f };
 
@@ -135,7 +136,7 @@ int main() {
         //game.Update(dt);
 
 		float time = Engine::Get().GetTime().GetTime();
-        color.r = sin(time * 10.0f) * 0.5f + 0.5f;
+        //color.r = sin(time * 10.0f) * 0.5f + 0.5f;
 
         glm::vec3 direction{ 0 };
 		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_A)) direction.x = -1.0f;
@@ -148,7 +149,7 @@ int main() {
 		cameraPos += direction * 4.0f * dt;
 
         //TRANSFORM
-        transform.rotation.z = time * 90;
+        //transform.rotation.z = time * 90;
 
         //VIEW MATRIX
         auto view = glm::lookAtRH(cameraPos, cameraPos + glm::vec3{ 0, 0, -1 }, glm::vec3{ 0, 1, 0 });
@@ -166,6 +167,7 @@ int main() {
         Engine::Get().GetRenderer().SetPipeline(*pipeline);
         Engine::Get().GetRenderer().SetVertexUniform(0, &uniform, sizeof(uniform));
         Engine::Get().GetRenderer().SetFragmentUniform(0, &color, sizeof(color));
+        Engine::Get().GetRenderer().SetFragmentTexture(0, *texture);
 
         model->Draw(Engine::Get().GetRenderer());
 

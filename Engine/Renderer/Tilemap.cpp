@@ -70,18 +70,20 @@ namespace nu {
 			return Rect();
 		}
 
-		Vector2 textureSize = layer.texture->GetSize();
-		int tilesPerRow = (int)(textureSize.x / m_tileWidth);
+		//Vector2 textureSize = layer.texture->GetSize();
+		//int tilesPerRow = (int)(textureSize.x / m_tileWidth);
 
-		int col = (tileId - 1) % tilesPerRow;
-		int row = (tileId - 1) / tilesPerRow;
+		//int col = (tileId - 1) % tilesPerRow;
+		//int row = (tileId - 1) / tilesPerRow;
 
-		return Rect {
+		/*
+		return Rect{
 			(float)(col * m_tileWidth),
 			(float)(row* m_tileHeight),
 			(float)(m_tileWidth),
 			(float)(m_tileHeight)
 		};
+		*/
 	}
 
 	Vector2 Tilemap::GetTilePosition(const Layer& layer, int tileIndex) {
