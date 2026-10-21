@@ -1,8 +1,12 @@
 #pragma once
 #include <rapidjson/document.h>
 #include <string>
-#include "Math/Vector2.h"
-#include "Math/Vector3.h"
+
+#include <glm/glm.hpp>
+
+//#include "Math/Vector3.h"
+//#include "Math/Vector2.h"
+
 #include <vector>
 
 #define JSON_READ_NAME(value, name, data) nu::json::Read(value, name, data)
@@ -30,8 +34,8 @@ namespace nu::json
 	bool Read(const value_t& value, const std::string& name, float& data, bool required = false);
 	bool Read(const value_t& value, const std::string& name, bool& data, bool required = false);
 	bool Read(const value_t& value, const std::string& name, std::string& data, bool required = false);
-	bool Read(const value_t& value, const std::string& name, Vector2& data, bool required = false);
-	bool Read(const value_t& value, const std::string& name, Vector3& data, bool required = false);
+	bool Read(const value_t& value, const std::string& name, glm::vec2& data, bool required = false);
+	bool Read(const value_t& value, const std::string& name, glm::vec3& data, bool required = false);
 
 	//oddball reads
 	bool Read(const value_t& value, const std::string& name, std::vector<int>& data, bool required = false);

@@ -134,29 +134,6 @@ namespace nu {
 		SDL_RenderLine(m_renderer, x1, y1, x2, y2);
 	}
 
-	void Renderer::DrawModel(const Model& model, const Transform& transform) const {
-		for (auto mesh : model.GetMeshes()) {
-			SetColor(mesh.GetColor().r, mesh.GetColor().g, mesh.GetColor().b, 1.0f);
-
-			auto& points = mesh.GetPoints();
-			for (int i = 0; i + 1 < mesh.GetPoints().size(); i++) {
-				Vector2 v1 = points[i];
-				Vector2 v2 = points[i + 1];
-
-				v1 *= transform.scale;
-				v2 *= transform.scale;
-
-				v1 = v1.Rotate(transform.rotation * DegToRad);
-				v2 = v2.Rotate(transform.rotation * DegToRad);
-
-				v1 += transform.position;
-				v2 += transform.position;
-
-				DrawLine(v1.x, v1.y, v2.x, v2.y);
-			}
-		}
-	}
-
 	void Renderer::DrawTexture(const Texture& texture, float x, float y, float angle, float scale, bool flipH, const Vector2& origin) const {
 		nu::Vector2 size = texture.GetSize();
 
@@ -257,13 +234,13 @@ namespace nu {
 		//   first vertex   - 0, start at the first vertex in the buffer
 		//   first instance - 0, start at the first instance
 
-		SDL_DrawGPUPrimitives(
-			m_gpuRenderPass,
-			vertexCount,
-			1,
-			0,
-			0
-		);
+		//SDL_DrawGPUPrimitives(
+		//	m_gpuRenderPass,
+		//	vertexCount,
+		//	1,
+		//	0,
+		//	0
+		//);
 	}
 
 	void Renderer::DrawIndex(const IndexBuffer& indexBuffer) {
