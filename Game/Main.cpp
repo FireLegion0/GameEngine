@@ -34,6 +34,13 @@
 #define MAX(a, b) ((a > b) ? a : b)
 
 using namespace nu;
+
+enum class LightType : uint32_t {
+    Directional,
+    Point,
+    Spot
+};
+
 namespace nu {
     struct Color4
     {
@@ -41,10 +48,6 @@ namespace nu {
     };
 }
 
-struct vertexUniform
-{
-    glm::mat4 mvp;
-};
 
 struct Vertex
 {
@@ -88,8 +91,8 @@ int main() {
     auto model = Resources().Get<Model>("models/spot.obj", Engine::Get().GetRenderer());
     auto texture = Resources().Get<Texture>("textures/spot_diffuse.png", Engine::Get().GetRenderer());
 
-    auto vshader = Resources().Get<nu::Shader>("shaders/unlit.vert", Engine::Get().GetRenderer(), 1);
-    auto fshader = Resources().Get<nu::Shader>("shaders/unlit.frag", Engine::Get().GetRenderer(), 1, 1);
+    auto vshader = Resources().Get<nu::Shader>("shaders/gouraud.vert", Engine::Get().GetRenderer(), 3);
+    auto fshader = Resources().Get<nu::Shader>("shaders/gouraud.frag", Engine::Get().GetRenderer(), 1, 1);
 
     auto pipeline = std::make_shared<Pipeline>();
 
@@ -104,13 +107,51 @@ int main() {
         Engine::Get().GetRenderer().GetWindow());
 
 
-    //SpaceGame game;
-    //game.Initialize();
+    //Uniforms
+	glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    struct VertexUniform
+    {
+        glm::mat4 mvp;
+        glm::mat4 model;
+        glm::vec3 cameraPos;
+        float pad1;
+    };
+    VertexUniform vertexUniform;
 
-    //float scale = 0.5f;
-	Color4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    vertexUniform uniform;
-	glm::vec3 cameraPos{ 0.0f, 0.0f, 5.0f };
+    struct LightUniform {
+        glm::vec3 lightPos;
+        LightType type;
+
+        glm::vec3 lightDir;
+        float pad2;
+
+        glm::vec3 lightCol;
+        float lightStr;
+
+        glm::vec3 ambient;
+        float pad3;
+    };
+    LightUniform lightUniform{
+        .lightPos{ 10, 10, 10 },
+        .type{ LightType::Point },
+        .lightDir{ 1, 0, 0 },
+        .lightCol{ 1, 1, 1 },
+        .lightStr{ 1 },
+        .ambient{ 0.2f }
+    };
+
+    struct MaterialUniform {
+        glm::vec2 tiling;
+        glm::vec2 offset;
+        float shininess;
+    };
+    MaterialUniform materialUniform{
+        .tiling{ 1.0f, 1.0f },
+        .offset{ 0.0f, 0.0f },
+        .shininess{ 32.0f }
+    };
+
+	vertexUniform.cameraPos = glm::vec3{ 0.0f, 0.0f, 5.0f };
 
     Transform transform;
 
@@ -146,26 +187,35 @@ int main() {
 		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_W)) direction.z = -1.0f;
 		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_S)) direction.z = +1.0f;
 
-		cameraPos += direction * 4.0f * dt;
+		vertexUniform.cameraPos += direction * 4.0f * dt;
 
-        //TRANSFORM
-        //transform.rotation.z = time * 90;
+		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_1)) lightUniform.type = LightType::Point;
+		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_2)) lightUniform.type = LightType::Spot;
+
+        //materialUniform.offset.x = time;
+        //materialUniform.tiling = glm::vec2{ 2.0f };
+
+        //TRANSFORMS
+        transform.rotation.y = time * 90;
 
         //VIEW MATRIX
-        auto view = glm::lookAtRH(cameraPos, cameraPos + glm::vec3{ 0, 0, -1 }, glm::vec3{ 0, 1, 0 });
+        auto view = glm::lookAtRH(vertexUniform.cameraPos, vertexUniform.cameraPos + glm::vec3{ 0, 0, -1 }, glm::vec3{ 0, 1, 0 });
 
 		//PROJECTION MATRIX
 		float aspectRatio = Engine::Get().GetRenderer().GetWidth() / (float)Engine::Get().GetRenderer().GetHeight();
         auto projection = glm::perspective(glm::radians(70.0f), aspectRatio, 0.1f, 20.0f);
 
         //MVP
-		uniform.mvp = projection * view * transform.GetMatrix();
+        vertexUniform.model = transform.GetMatrix();
+        vertexUniform.mvp = projection * view * vertexUniform.model;
 
         // RENDER
         Engine::Get().GetRenderer().BeginFrame();
 
         Engine::Get().GetRenderer().SetPipeline(*pipeline);
-        Engine::Get().GetRenderer().SetVertexUniform(0, &uniform, sizeof(uniform));
+        Engine::Get().GetRenderer().SetVertexUniform(0, &vertexUniform, sizeof(vertexUniform));
+        Engine::Get().GetRenderer().SetVertexUniform(1, &lightUniform, sizeof(lightUniform));
+        Engine::Get().GetRenderer().SetVertexUniform(2, &materialUniform, sizeof(materialUniform));
         Engine::Get().GetRenderer().SetFragmentUniform(0, &color, sizeof(color));
         Engine::Get().GetRenderer().SetFragmentTexture(0, *texture);
 

@@ -25,7 +25,7 @@ namespace nu
 		// a surface is image data in cpu memory
 
 		// load the image file with IMG_Load(filename)
-		SDL_Surface* loadedSurface = nullptr; // todo
+		SDL_Surface* loadedSurface = IMG_Load(filename.c_str()); // todo
 		if (loadedSurface == nullptr)
 		{
 			std::cerr << "Could not load image " << filename << ": " << SDL_GetError() << std::endl;
