@@ -41,23 +41,14 @@ Output main(Input input)
     
     float3 worldPos = mul(model, float4(input.position, 1.0f)).xyz;
     float3 rad = light.col * light.str;
-    
-    //DIFFUSE
+    float atten;
+    float3 L = getLightVector(light, worldPos, atten);
     float3 N = normalize(mul((float3x3) model, input.normal));
     
-    float3 L;
-    if (light.type == LIGHT_DIRECTIONAL)
-    {
-        L = normalize(-light.dir);
-    }
-    else if(light.type == LIGHT_POINT)
-    {
-        L = normalize(light.dir - worldPos);
-    }
-    
+    //DIFFUSE
     float NdotL = saturate(dot(N, L));
     
-    float3 diffuse = rad * NdotL;
+    float3 diffuse = rad * NdotL * atten;
     
     output.diffuse = light.ambient + diffuse;
     
@@ -67,9 +58,11 @@ Output main(Input input)
     {
         float3 R = reflect(-L, N);
         float3 V = normalize(cameraPos - worldPos);
-        float RdotV = saturate(dot(R, V));
-        RdotV = pow(RdotV, material.shininess);
-        output.specular = rad * RdotV;
+        float3 H = normalize(V + L);
+        float HdotN = saturate(dot(H, N));
+        
+        //RdotV = pow(RdotV, material.shininess);
+        output.specular = rad * HdotN * atten;
     }
 
     return output;
