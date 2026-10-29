@@ -46,8 +46,8 @@ Output main(Input input)
     float3 V = normalize(cameraPos - input.worldPos);
     for (uint i = 0; i < numLights; i++)
     {
-        float3 diffuse;
-        float3 specular;
+        //float3 diffuse = ambient;
+        //float3 specular = 0;
         
         calculateLighting(lights[i], material, input.worldPos, normalize(input.normal), V, diffuse, specular);
     }

@@ -18,13 +18,13 @@ struct Material
 
 struct Light
 {
-    float3 pos;
+    float3 lightPos;
     uint type;
     
-    float3 col;
-    float str;
+    float3 lightCol;
+    float lightStr;
     
-    float3 dir;
+    float3 lightDir;
     float inCut;
     
     float3 ambient;
@@ -41,17 +41,17 @@ float calculateAttenuation(float dist, float range)
 
 float3 getLightVector(Light light, float3 pos, out float atten)
 {
-    float3 L;
+    float3 L = 0;
     atten = 1.0f;
     
     switch (light.type)
     {
         case LIGHT_DIRECTIONAL:
-            L = normalize(-light.dir);
+            L = normalize(-light.lightDir);
             break;
         case LIGHT_POINT:
         {
-            float3 toLight = light.dir - pos;
+            float3 toLight = light.lightPos - pos;
             float dist = length(toLight);
             atten = calculateAttenuation(dist, light.range);
             L = toLight / dist;
@@ -59,11 +59,11 @@ float3 getLightVector(Light light, float3 pos, out float atten)
             break;
         case LIGHT_SPOT:
         {
-            float3 toLight = light.dir - pos;
+            float3 toLight = light.lightPos - pos;
             float dist = length(toLight);
             L = toLight / dist;
             atten = calculateAttenuation(dist, light.range);
-            atten *= smoothstep(light.outCut, light.inCut, dot(-L, light.dir));
+            atten *= smoothstep(light.outCut, light.inCut, dot(-L, light.lightDir));
         }
             break;
     }
@@ -98,7 +98,7 @@ void calculateLighting(Light light, Material material, float3 position, float3 N
     float3 L = getLightVector(light, position, attenuation);
 
     // light arriving at the surface
-    float3 radiance = light.col * light.str * attenuation;
+    float3 radiance = light.lightCol * light.lightStr * attenuation;
 
     diffuse += calculateDiffuse(radiance, N, L);
     specular += calculateSpecular(radiance, N, L, V, material);
