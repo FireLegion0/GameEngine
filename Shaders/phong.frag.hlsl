@@ -42,9 +42,8 @@ Output main(Input input)
     float3 specular;
     
     float3 V = normalize(cameraPos - input.worldPos);
+    
     calculateLighting(light, material, input.worldPos, normalize(input.normal), V, diffuse, specular);
-    
-    
     
     output.color = float4(albedo.rgb * diffuse + specular, albedo.a);
 

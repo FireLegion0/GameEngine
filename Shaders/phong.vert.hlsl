@@ -41,8 +41,6 @@ Output main(Input input)
     
     output.worldPos = mul(model, float4(input.position, 1.0f)).xyz;
     output.normal = normalize(mul((float3x3) model, input.normal));
-    
-    //calculateLighting(light, material, worldPos, N, V, output.diffuse, output.specular);
 
     return output;
 }

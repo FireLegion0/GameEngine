@@ -89,8 +89,8 @@ int main() {
     auto ib = std::make_shared<IndexBuffer>();
     ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
 
-    auto model = Resources().Get<Model>("models/sphere.obj", Engine::Get().GetRenderer());
-    auto texture = Resources().Get<Texture>("textures/spot_diffuse.png", Engine::Get().GetRenderer());
+    auto model = Resources().Get<Model>("models/plane.obj", Engine::Get().GetRenderer());
+    auto texture = Resources().Get<Texture>("textures/lava_diffuse.png", Engine::Get().GetRenderer());
 
     auto vshader = Resources().Get<Shader>("shaders/phong.vert", Engine::Get().GetRenderer(), 3);
     auto fshader = Resources().Get<Shader>("shaders/phong.frag", Engine::Get().GetRenderer(), 3, 1);
@@ -140,15 +140,15 @@ int main() {
     CHECK_UNIFORM_BOUNDARY(LightUniform)
 
     LightUniform lightUniform{
-        .lightPos{ 0, 0, 0 },
+        .lightPos{ 10, 10, 10 },
         .type{ LightType::Point },
         .lightCol{ 1, 1, 1 },
-        .lightStr{ 0.5 },
+        .lightStr{ 1 },
         .lightDir{ 0, -1, 0 },
         .inCut{ 0.3f },
         .ambient{ 0.1f },
-        .outCut{ 2.6f },
-        .range{ 40 }
+        .outCut{ 1.6f },
+        .range{ 60 }
     };
 
     struct MaterialUniform {
@@ -162,12 +162,12 @@ int main() {
 
     MaterialUniform materialUniform{
         .color{ 1, 1, 1, 1 },
-        .tiling{ 1.0f, 1.0f },
+        .tiling{ 4.0f, 4.0f },
         .offset{ 0.0f, 0.0f },
         .shininess{ 64.0f }
     };
 
-	vertexUniform.cameraPos = glm::vec3{ 0.0f, 0.0f, 5.0f };
+	vertexUniform.cameraPos = glm::vec3{ 0.0f, 3.0f, 8.0f };
 
     Transform transform;
 
@@ -212,20 +212,20 @@ int main() {
             lightUniform.type = LightType::Spot;
             lightUniform.lightPos = glm::vec3{ 0, 10, 0 };
             lightUniform.inCut = glm::cos(glm::radians(10.0f));
-            lightUniform.outCut = glm::cos(glm::radians(15.0f));
+            lightUniform.outCut = glm::cos(glm::radians(30.0f));
         }
 
         //materialUniform.offset.x = time;
         //materialUniform.tiling = glm::vec2{ 2.0f };
 
         //TRANSFORMS
-        transform.rotation.y = time * 90;
+        //transform.rotation.y = time * 90;
 
         //VIEW MATRIX
         auto view = glm::lookAtRH(vertexUniform.cameraPos, vertexUniform.cameraPos + glm::vec3{ 0, 0, -1 }, glm::vec3{ 0, 1, 0 });
 
 		//PROJECTION MATRIX
-		float aspectRatio = Engine::Get().GetRenderer().GetWidth() / (float)Engine::Get().GetRenderer().GetHeight();
+		float aspectRatio = Engine::Get().GetRenderer().GetWidth() / static_cast<float>(Engine::Get().GetRenderer().GetHeight());
         auto projection = glm::perspective(glm::radians(70.0f), aspectRatio, 0.1f, 20.0f);
 
         //MVP
@@ -236,6 +236,7 @@ int main() {
         Engine::Get().GetRenderer().BeginFrame();
 
         Engine::Get().GetRenderer().SetPipeline(*pipeline);
+
         Engine::Get().GetRenderer().SetVertexUniform(0, &vertexUniform, sizeof(vertexUniform));
         Engine::Get().GetRenderer().SetVertexUniform(1, &lightUniform, sizeof(lightUniform));
         Engine::Get().GetRenderer().SetVertexUniform(2, &materialUniform, sizeof(materialUniform));
@@ -243,6 +244,7 @@ int main() {
         Engine::Get().GetRenderer().SetFragmentUniform(0, &vertexUniform, sizeof(vertexUniform));
         Engine::Get().GetRenderer().SetFragmentUniform(1, &lightUniform, sizeof(lightUniform));
         Engine::Get().GetRenderer().SetFragmentUniform(2, &materialUniform, sizeof(materialUniform));
+
         Engine::Get().GetRenderer().SetFragmentTexture(0, *texture);
 
         model->Draw(Engine::Get().GetRenderer());
