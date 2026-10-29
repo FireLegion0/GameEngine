@@ -40,30 +40,10 @@ Output main(Input input)
     output.position = mul(mvp, float4(input.position, 1.0f));
     
     float3 worldPos = mul(model, float4(input.position, 1.0f)).xyz;
-    float3 rad = light.col * light.str;
-    float atten;
-    float3 L = getLightVector(light, worldPos, atten);
     float3 N = normalize(mul((float3x3) model, input.normal));
+    float3 V = normalize(cameraPos - worldPos);
     
-    //DIFFUSE
-    float NdotL = saturate(dot(N, L));
-    
-    float3 diffuse = rad * NdotL * atten;
-    
-    output.diffuse = light.ambient + diffuse;
-    
-    //SPECULAR
-    output.specular = 0;
-    if (NdotL > 0)
-    {
-        float3 R = reflect(-L, N);
-        float3 V = normalize(cameraPos - worldPos);
-        float3 H = normalize(V + L);
-        float HdotN = saturate(dot(H, N));
-        
-        //RdotV = pow(RdotV, material.shininess);
-        output.specular = rad * HdotN * atten;
-    }
+    calculateLighting(light, material, worldPos, N, V, output.diffuse, output.specular);
 
     return output;
 }
