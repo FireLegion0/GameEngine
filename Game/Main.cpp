@@ -33,6 +33,7 @@
 #define TEXT "Hello!\n"
 #define MAX(a, b) ((a > b) ? a : b)
 #define CHECK_UNIFORM_BOUNDARY(T) static_assert((sizeof(T) % 16) == 0);
+#define MAX_LIGHTS 8
 
 using namespace nu;
 
@@ -89,11 +90,11 @@ int main() {
     auto ib = std::make_shared<IndexBuffer>();
     ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
 
-    auto model = Resources().Get<Model>("models/plane.obj", Engine::Get().GetRenderer());
+    auto model = Resources().Get<Model>("models/sphere.obj", Engine::Get().GetRenderer());
     auto texture = Resources().Get<Texture>("textures/lava_diffuse.png", Engine::Get().GetRenderer());
 
-    auto vshader = Resources().Get<Shader>("shaders/phong.vert", Engine::Get().GetRenderer(), 3);
-    auto fshader = Resources().Get<Shader>("shaders/phong.frag", Engine::Get().GetRenderer(), 3, 1);
+    auto vshader = Resources().Get<Shader>("shaders/gouraud.vert", Engine::Get().GetRenderer(), 3);
+    auto fshader = Resources().Get<Shader>("shaders/gouraud.frag", Engine::Get().GetRenderer(), 3, 1);
 
     auto pipeline = std::make_shared<Pipeline>();
 
@@ -121,7 +122,7 @@ int main() {
 
     VertexUniform vertexUniform;
 
-    struct LightUniform {
+    struct Light {
         glm::vec3 lightPos;
         LightType type;
 
@@ -137,9 +138,17 @@ int main() {
         glm::vec3 pad;
         float range;
     };
-    CHECK_UNIFORM_BOUNDARY(LightUniform)
 
-    LightUniform lightUniform{
+    struct LightUniform {
+        Light lights[MAX_LIGHTS];
+        glm::vec3 ambient;
+        uint32_t numLights;
+    };
+
+    CHECK_UNIFORM_BOUNDARY(LightUniform)
+        LightUniform lightUniform;
+
+    Light light1{
         .lightPos{ 10, 10, 10 },
         .type{ LightType::Point },
         .lightCol{ 1, 1, 1 },
@@ -150,6 +159,23 @@ int main() {
         .outCut{ 1.6f },
         .range{ 60 }
     };
+
+    Light light2{
+        .lightPos{ 10, 10, 10 },
+        .type{ LightType::Point },
+        .lightCol{ 0, 0, 1 },
+        .lightStr{ 1 },
+        .lightDir{ 0, -1, 0 },
+        .inCut{ 0.3f },
+        .ambient{ 0.1f },
+        .outCut{ 1.6f },
+        .range{ 60 }
+    };
+
+    lightUniform.lights[0] = light1;
+    lightUniform.lights[1] = light2;
+    lightUniform.numLights = 2;
+    lightUniform.ambient = glm::vec3{ 0.2f };
 
     struct MaterialUniform {
         glm::vec4 color;
@@ -205,15 +231,18 @@ int main() {
 
 		vertexUniform.cameraPos += direction * 4.0f * dt;
 
-		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_1)) lightUniform.type = LightType::Directional;
-		if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_2)) lightUniform.type = LightType::Point;
-        if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_3))
-        {
-            lightUniform.type = LightType::Spot;
-            lightUniform.lightPos = glm::vec3{ 0, 10, 0 };
-            lightUniform.inCut = glm::cos(glm::radians(10.0f));
-            lightUniform.outCut = glm::cos(glm::radians(30.0f));
-        }
+        lightUniform.lights[0].lightPos = glm::eulerAngleY(time) * glm::vec4{ 0, 0, 10, 1 };
+        lightUniform.lights[0].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
+
+		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_1)) light1.type = LightType::Directional;
+		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_2)) light1.type = LightType::Point;
+        //if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_3))
+        //{
+        //    light1.type = LightType::Spot;
+        //    light1.lightPos = glm::vec3{ 0, 10, 0 };
+        //    light1.inCut = glm::cos(glm::radians(10.0f));
+        //    light1.outCut = glm::cos(glm::radians(30.0f));
+        //}
 
         //materialUniform.offset.x = time;
         //materialUniform.tiling = glm::vec2{ 2.0f };
