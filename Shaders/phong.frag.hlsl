@@ -44,7 +44,8 @@ Output main(Input input)
     float3 specular = 0;
     
     float3 V = normalize(cameraPos - input.worldPos);
-    for (uint i = 0; i < numLights; i++)
+    uint lightCount = min(numLights, MAX_LIGHTS);
+    for (uint i = 0; i < lightCount; i++)
     {
         //float3 diffuse = ambient;
         //float3 specular = 0;

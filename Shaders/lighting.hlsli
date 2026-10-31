@@ -92,7 +92,7 @@ float3 calculateSpecular(float3 rad, float3 N, float3 L, float3 V, Material mate
 }
 
 void calculateLighting(Light light, Material material, float3 position, float3 N, float3 V,
-                       out float3 diffuse, out float3 specular)
+                       inout float3 diffuse, inout float3 specular)
 {
     float attenuation;
     float3 L = getLightVector(light, position, attenuation);

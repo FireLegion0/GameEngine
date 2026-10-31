@@ -30,7 +30,6 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/transform.hpp>
 
-#define TEXT "Hello!\n"
 #define MAX(a, b) ((a > b) ? a : b)
 #define CHECK_UNIFORM_BOUNDARY(T) static_assert((sizeof(T) % 16) == 0);
 #define MAX_LIGHTS 8
@@ -66,10 +65,10 @@ std::vector<Vertex> vertices =
     Vertex{ Vector3{ -0.5f,  0.5f, 0.0f }, Color4{ 0.0f, 1.0f, 1.0f, 1.0f }}  // Top-Left
 };
 
-std::vector<uint32_t> indices = 
-{
-    0, 1, 2, 2, 3, 0
-};
+//std::vector<uint32_t> indices = 
+//{
+//    0, 1, 2, 2, 3, 0
+//};
 
 int main() {
 	SetWorkingDirectory("assets"); //Keep this at the top of main() to ensure the working directory is set before any assets are loaded
@@ -84,11 +83,11 @@ int main() {
 	//INITIALIZATION
     Engine::Get().Initialize();
 
-    auto vb = std::make_shared<VertexBuffer>();
-    vb->Create<Vertex>(vertices, Engine::Get().GetRenderer());
+    //auto vb = std::make_shared<VertexBuffer>();
+    //vb->Create<Vertex>(vertices, Engine::Get().GetRenderer());
 
-    auto ib = std::make_shared<IndexBuffer>();
-    ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
+    //auto ib = std::make_shared<IndexBuffer>();
+    //ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
 
     auto model = Resources().Get<Model>("models/plane.obj", Engine::Get().GetRenderer());
     auto texture = Resources().Get<Texture>("textures/lava_diffuse.png", Engine::Get().GetRenderer());
@@ -141,8 +140,8 @@ int main() {
 
     struct LightUniform {
         Light lights[MAX_LIGHTS];
-        glm::vec3 ambient;
         uint32_t numLights;
+        glm::vec3 ambient;
     };
 
     CHECK_UNIFORM_BOUNDARY(LightUniform)
@@ -194,7 +193,7 @@ int main() {
         .shininess{ 64.0f }
     };
 
-	vertexUniform.cameraPos = glm::vec3{ 0.0f, 3.0f, 8.0f };
+	vertexUniform.cameraPos = glm::vec3{ 0, 3, 8 };
 
     Transform transform;
 
@@ -233,7 +232,7 @@ int main() {
 		vertexUniform.cameraPos += direction * 4.0f * dt;
 
         //lightUniform.lights[0].lightPos = glm::eulerAngleY(time) * glm::vec4{ 0, 0, 10, 1 };
-        //lightUniform.lights[0].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
+        lightUniform.lights[1].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
 
 		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_1)) light1.type = LightType::Directional;
 		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_2)) light1.type = LightType::Point;
@@ -256,7 +255,7 @@ int main() {
 
 		//PROJECTION MATRIX
 		float aspectRatio = Engine::Get().GetRenderer().GetWidth() / static_cast<float>(Engine::Get().GetRenderer().GetHeight());
-        auto projection = glm::perspective(glm::radians(70.0f), aspectRatio, 0.1f, 20.0f);
+        auto projection = glm::perspective(glm::radians(70.0f), aspectRatio, 0.1f, 200.0f);
 
         //MVP
         vertexUniform.model = transform.GetMatrix();
