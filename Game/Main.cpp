@@ -89,7 +89,7 @@ int main() {
     //auto ib = std::make_shared<IndexBuffer>();
     //ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
 
-    auto model = Resources().Get<Model>("models/plane.obj", Engine::Get().GetRenderer());
+    auto model = Resources().Get<Model>("models/sphere.obj", Engine::Get().GetRenderer());
     auto texture = Resources().Get<Texture>("textures/lava_diffuse.png", Engine::Get().GetRenderer());
 
     auto vshader = Resources().Get<Shader>("shaders/phong.vert", Engine::Get().GetRenderer(), 3);
@@ -149,10 +149,10 @@ int main() {
 
     Light light1{
         .lightPos{ 0, 10, 0 },
-        .type{ LightType::Spot },
-        .lightCol{ 1, 1, 1 },
-        .lightStr{ 3 },
-        .lightDir{ 0, -1, 0 },
+        .type{ LightType::Point },
+        .lightCol{ 0, 1, 0 },
+        .lightStr{ 1 },
+        .lightDir{ 0, 1, 0 },
         .inCut{ 0.3f },
         .ambient{ 0.6f },
         .outCut{ 1.6f },
@@ -160,11 +160,22 @@ int main() {
     };
 
     Light light2{
-        .lightPos{ 10, 10, 10 },
+        .lightPos{ 0, -10, 0 },
         .type{ LightType::Point },
         .lightCol{ 0, 0, 1 },
-        .lightStr{ 2 },
-        .lightDir{ 0, -1, 0 },
+        .lightStr{ 1 },
+        .lightDir{ 0, 1, 0 },
+        .inCut{ 0.3f },
+        .ambient{ 0.6f },
+        .outCut{ 1.6f },
+        .range{ 60 }
+    };
+    Light light3{
+        .lightPos{ 0, 0, 5 },
+        .type{ LightType::Point },
+        .lightCol{ 1, 0, 0 },
+        .lightStr{ 1 },
+        .lightDir{ 0, 1, 0 },
         .inCut{ 0.3f },
         .ambient{ 0.6f },
         .outCut{ 1.6f },
@@ -173,8 +184,8 @@ int main() {
 
     lightUniform.lights[0] = light1;
     lightUniform.lights[1] = light2;
-    //lightUniform.lights[2] = light3;
-    lightUniform.numLights = 2;
+    lightUniform.lights[2] = light3;
+    lightUniform.numLights = 3;
     lightUniform.ambient = glm::vec3{ 0.1f };
 
     struct MaterialUniform {
@@ -232,7 +243,7 @@ int main() {
 		vertexUniform.cameraPos += direction * 4.0f * dt;
 
         //lightUniform.lights[0].lightPos = glm::eulerAngleY(time) * glm::vec4{ 0, 0, 10, 1 };
-        lightUniform.lights[1].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
+        //lightUniform.lights[1].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
 
 		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_1)) light1.type = LightType::Directional;
 		//if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_2)) light1.type = LightType::Point;

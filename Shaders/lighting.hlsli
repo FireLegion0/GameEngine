@@ -59,7 +59,7 @@ float3 getLightVector(Light light, float3 pos, out float atten)
             break;
         case LIGHT_SPOT:
         {
-            float3 toLight = light.lightPos - pos;
+            float3 toLight = light.lightDir - pos;
             float dist = length(toLight);
             L = toLight / dist;
             atten = calculateAttenuation(dist, light.range);
