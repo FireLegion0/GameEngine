@@ -204,6 +204,7 @@
     <None Include="..\Build\Assets\Animations\Run.json" />
     <None Include="..\Build\Assets\Data\level.json" />
     <None Include="..\Build\Assets\Data\scene.json" />
+    <None Include="..\Build\Assets\Scene\scene.json" />
     <None Include="..\Build\Assets\TileMap\world.json" />
     <None Include="..\README.md" />
   </ItemGroup>

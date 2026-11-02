@@ -83,6 +83,9 @@ int main() {
 	//INITIALIZATION
     Engine::Get().Initialize();
 
+	Scene scene;
+	scene.Load("scenes/scene.json");
+
     //auto vb = std::make_shared<VertexBuffer>();
     //vb->Create<Vertex>(vertices, Engine::Get().GetRenderer());
 
