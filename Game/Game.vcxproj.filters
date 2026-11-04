@@ -48,7 +48,7 @@
     <None Include="..\README.md">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Build\Assets\Scene\scene.json">
+    <None Include="..\Build\Assets\Scenes\scene.json">
       <Filter>Assets\Scenes</Filter>
     </None>
   </ItemGroup>

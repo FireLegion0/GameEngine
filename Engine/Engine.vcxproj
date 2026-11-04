@@ -205,6 +205,7 @@
   <ItemGroup>
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Components\CameraComponent.h" />
+    <ClInclude Include="Components\CameraControllerComponent.h" />
     <ClInclude Include="Components\ColliderComponent.h" />
     <ClInclude Include="Components\Component.h" />
     <ClInclude Include="Components\LightComponent.h" />
@@ -251,6 +252,7 @@
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
+    <ClCompile Include="Components\CameraControllerComponent.cpp" />
     <ClCompile Include="Components\LightComponent.cpp" />
     <ClCompile Include="Components\MaterialComponent.cpp" />
     <ClCompile Include="Components\ModelComponent.cpp" />

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/norm.hpp>
 
 namespace nu {
 	struct Transform {
@@ -24,10 +25,25 @@ namespace nu {
 			return mat;
 		}
 
+		glm::vec3 Forward() const {
+			auto mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+			return mxr * glm::vec4{ 0, 0, 1, 0 };
+		}
+
+		glm::vec3 Up() const {
+			auto mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+			return mxr * glm::vec4{ 0, 1, 0, 0 };
+		}
+
+		glm::vec3 Right() const {
+			auto mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+			return mxr * glm::vec4{ 1, 0, 0, 0 };
+		}
+
 		void Read(const json::value_t& value) {
-			//JSON_READ_REQ(value, position);
-			//JSON_READ_REQ(value, rotation);
-			//JSON_READ_REQ(value, scale);
+			JSON_READ_REQ(value, position);
+			JSON_READ_REQ(value, rotation);
+			JSON_READ_REQ(value, scale);
 		}
 	};
 }
