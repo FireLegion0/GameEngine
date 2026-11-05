@@ -11,7 +11,7 @@ namespace nu {
 	class Scene {
 	public:
 		void AddActor(std::unique_ptr<Actor> actor);
-		void RemvoeAllActors(bool force = false);
+		void RemoveAllActors(bool force = false);
 
 		bool Load(const std::string& sceneName);
 
@@ -20,6 +20,9 @@ namespace nu {
 
 		template<typename T = Actor>
 		T* GetActorByName(const std::string& name);
+
+		template<typename T = Actor>
+		std::vector<T*> GetActorByTag(const std::string& tag);
 
 		void SetGame(class Game* game) { m_game = game; }
 		class Game* GetGame() { return m_game; }
@@ -43,5 +46,19 @@ namespace nu {
 		}
 
 		return nullptr;
+	}
+
+	template<typename T>
+	inline std::vector<T*> Scene::GetActorByTag(const std::string& tag)
+	{
+		std::vector<T*> result;
+		for (auto& actor : m_actors) {
+			T* actorT = dynamic_cast<T*>(actor.get());
+			if (actorT && actorT->m_tag == tag) {
+				result.push_back(actorT);
+			}
+		}
+
+		return result;
 	}
 }

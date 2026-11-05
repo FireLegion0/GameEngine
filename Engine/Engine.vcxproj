@@ -234,6 +234,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer\Font.h" />
     <ClInclude Include="Renderer\IndexBuffer.h" />
+    <ClInclude Include="Renderer\Light.h" />
     <ClInclude Include="Renderer\Mesh.h" />
     <ClInclude Include="Renderer\Model.h" />
     <ClInclude Include="Renderer\Particle.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Renderer\Texture.h" />
     <ClInclude Include="Renderer\TextureFrames.h" />
     <ClInclude Include="Renderer\Tilemap.h" />
+    <ClInclude Include="Renderer\Uniforms.h" />
     <ClInclude Include="Renderer\VertexBuffer.h" />
     <ClInclude Include="Resources\Resource.h" />
     <ClInclude Include="Resources\ResourceManager.h" />

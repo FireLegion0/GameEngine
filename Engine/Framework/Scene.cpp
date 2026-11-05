@@ -2,7 +2,10 @@
 #include "Scene.h"
 #include "Actor.h"
 #include "Core/Factory.h"
-#include "Components/ColliderComponent.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Light.h"
+#include "Components/CameraComponent.h"
+#include "Components/LightComponent.h"
 
 namespace nu {
 	void Scene::AddActor(std::unique_ptr<Actor> actor) {
@@ -10,7 +13,7 @@ namespace nu {
 		m_pendingActors.push_back(std::move(actor));
 	}
 
-	void Scene::RemvoeAllActors(bool force) {
+	void Scene::RemoveAllActors(bool force) {
 		std::erase_if(m_actors, [force](auto& actor) { return !actor->GetPersist() || force; });
 	}
 
@@ -68,8 +71,42 @@ namespace nu {
 	}
 
 	void Scene::Draw(const class Renderer& renderer) {
+		FrameUniform frameUniform{};
+
+		auto cam = GetActorByName("Camera");
+		if (cam) {
+			auto camComp = cam->GetComponent<CameraComponent>();
+			if(camComp){
+				frameUniform.cameraPosition = cam->GetTransform().position;
+				frameUniform.view = camComp->GetView();
+				frameUniform.projection = camComp->GetProjection();
+				frameUniform.viewProjection = frameUniform.projection * frameUniform.view;
+
+				renderer.SetVertexUniform(UniformSlot::Frame, &frameUniform, sizeof(frameUniform));
+				renderer.SetFragmentUniform(UniformSlot::Frame, &frameUniform, sizeof(frameUniform));
+			}
+		}
+
+		LightUniform lightUniform{};
+
+		auto lights = GetActorByTag("Light");
+		for (auto light : lights)
+		{
+			auto lightComponent = light->GetComponent<LightComponent>();
+			if (lightComponent)
+			{
+				//lightUniform.lights[lightUniform.count++] = lightComponent->GetLightData();
+			}
+		}
+
+		renderer.SetVertexUniform(UniformSlot::Light, &lightUniform, sizeof(lightUniform));
+		renderer.SetFragmentUniform(UniformSlot::Light, &lightUniform, sizeof(lightUniform));
+
+
 		for (const auto& actor : m_actors) {
-			actor->Draw(renderer);
+			if (actor) {
+				actor->Draw(renderer);
+			}
 		}
 	}
 

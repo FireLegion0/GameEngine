@@ -48,8 +48,8 @@ namespace nu {
         void SetTransform(const Transform& transform) { m_transform = transform; }
 
        void SetPosition(const glm::vec3& position) { m_transform.position = position; }
-       void SetRotation(glm::vec3 rotation) { m_transform.rotation = rotation; }
-       void SetScale(glm::vec3 scale) { m_transform.scale = scale; }
+       void SetRotation(const glm::vec3& rotation) { m_transform.SetRotationEuler(rotation); }
+       void SetScale(const glm::vec3& scale) { m_transform.scale = scale; }
 
         const std::string& GetName() const { return m_name; }
 
