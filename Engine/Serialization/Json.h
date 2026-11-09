@@ -40,4 +40,5 @@ namespace nu::json
 
 	//oddball reads
 	bool Read(const value_t& value, const std::string& name, std::vector<int>& data, bool required = false);
+	bool Read(const value_t& value, const std::string& name, std::vector<std::string>& data, bool required = false);
 }

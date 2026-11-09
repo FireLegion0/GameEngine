@@ -1,12 +1,35 @@
 #include "pch.h"
 #include "ModelComponent.h"
 #include "Core/Factory.h"
+#include "Renderer/Uniforms.h"
+#include "Renderer/Renderer.h"
+#include "Framework/Actor.h"
+#include "Engine.h"
 
 namespace nu
 {
 	FACTORY_REGISTER(ModelComponent)
 
-		void ModelComponent::Draw(const Renderer& renderer)
+	void ModelComponent::Draw(const Renderer& renderer)
 	{
+		ObjectUniform objectUniform{
+			.model = m_owner->GetTransform().GetMatrix(),
+			.normalMatrix = m_owner->GetTransform().GetMatrix(),
+		};
+
+		renderer.SetVertexUniform(UniformSlot::Light, &objectUniform, sizeof(objectUniform));
+		renderer.SetFragmentUniform(UniformSlot::Light, &objectUniform, sizeof(objectUniform));
+
+		m_model->Draw(renderer);
+	}
+
+	void ModelComponent::Read(const json::value_t& value)
+	{
+		RendererComponent::Read(value);
+
+		std::string modelName;
+		JSON_READ_NAME(value, "model", modelName);
+
+		m_model = Resources().Get<Model>(modelName, Engine::Get().GetRenderer());
 	}
 }

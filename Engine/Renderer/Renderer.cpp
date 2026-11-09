@@ -256,7 +256,7 @@ namespace nu {
 		);
 	}
 
-	void Renderer::DrawIndex(const IndexBuffer& indexBuffer) {
+	void Renderer::DrawIndex(const IndexBuffer& indexBuffer) const {
 		SDL_DrawGPUIndexedPrimitives(
 			m_gpuRenderPass,
 			indexBuffer.GetIndexCount(),

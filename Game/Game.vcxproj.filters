@@ -22,6 +22,9 @@
     <Filter Include="Assets\Scenes">
       <UniqueIdentifier>{366cdbab-965d-43f1-9a8c-c3c63eb7bc1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Materials">
+      <UniqueIdentifier>{263cb7f8-8d2f-40ab-be89-527ac1a4f0dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

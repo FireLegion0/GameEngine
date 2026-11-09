@@ -31,43 +31,8 @@
 #include <glm/gtx/transform.hpp>
 
 #define MAX(a, b) ((a > b) ? a : b)
-#define MAX_LIGHTS 8
 
 using namespace nu;
-
-enum class LightType : uint32_t {
-    Directional,
-    Point,
-    Spot
-};
-
-namespace nu {
-    struct Color4
-    {
-		float r, g, b, a;
-    };
-}
-
-
-struct Vertex
-{
-	Vector3 position;
-    Color4 color;
-    Vector2 uv;
-};
-
-std::vector<Vertex> vertices =
-{
-    Vertex{ Vector3{ -0.5f, -0.5f, 0.0f }, Color4{ 1.0f, 0.0f, 0.0f, 1.0f }}, // Bottom-Left
-    Vertex{ Vector3{  0.5f, -0.5f, 0.0f }, Color4{ 0.0f, 1.0f, 0.0f, 1.0f }}, // Bottom-Right
-    Vertex{ Vector3{  0.5f,  0.5f, 0.0f }, Color4{ 0.0f, 0.0f, 1.0f, 1.0f }}, // Top-Right
-    Vertex{ Vector3{ -0.5f,  0.5f, 0.0f }, Color4{ 0.0f, 1.0f, 1.0f, 1.0f }}  // Top-Left
-};
-
-//std::vector<uint32_t> indices = 
-//{
-//    0, 1, 2, 2, 3, 0
-//};
 
 int main() {
 	SetWorkingDirectory("assets"); //Keep this at the top of main() to ensure the working directory is set before any assets are loaded
@@ -85,13 +50,6 @@ int main() {
 	Scene scene;
 	scene.Load("scenes/scene.json");
 
-    //auto vb = std::make_shared<VertexBuffer>();
-    //vb->Create<Vertex>(vertices, Engine::Get().GetRenderer());
-
-    //auto ib = std::make_shared<IndexBuffer>();
-    //ib->Create(static_cast<uint32_t>(indices.size()), indices.data(), Engine::Get().GetRenderer());
-
-    auto model = Resources().Get<Model>("models/sphere.obj", Engine::Get().GetRenderer());
     auto texture = Resources().Get<Texture>("textures/lava_diffuse.png", Engine::Get().GetRenderer());
 
     auto vshader = Resources().Get<Shader>("shaders/phong.vert", Engine::Get().GetRenderer(), 3);
@@ -108,107 +66,8 @@ int main() {
     pipeline->Create(*vshader.get(), *fshader.get(),
         Engine::Get().GetRenderer().GetGPUDevice(),
         Engine::Get().GetRenderer().GetWindow());
-
-
-    //Uniforms
-	glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    struct VertexUniform
-    {
-        glm::mat4 mvp;
-        glm::mat4 model;
-        glm::vec3 cameraPos;
-        float pad1;
-    };
-    CHECK_UNIFORM_BOUNDARY(VertexUniform);
-
-    VertexUniform vertexUniform;
-
-    struct Light {
-        glm::vec3 lightPos;
-        LightType type;
-
-        glm::vec3 lightCol;
-        float lightStr;
-
-        glm::vec3 lightDir;
-        float inCut;
-
-        glm::vec3 ambient;
-        float outCut;
-
-        glm::vec3 pad;
-        float range;
-    };
-
-    struct LightUniform {
-        Light lights[MAX_LIGHTS];
-        uint32_t numLights;
-        glm::vec3 ambient;
-    };
-
-    CHECK_UNIFORM_BOUNDARY(LightUniform);
-    LightUniform lightUniform;
-
-    Light light1{
-        .lightPos{ 0, 10, 0 },
-        .type{ LightType::Point },
-        .lightCol{ 0, 1, 0 },
-        .lightStr{ 1 },
-        .lightDir{ 0, 1, 0 },
-        .inCut{ 0.3f },
-        .ambient{ 0.6f },
-        .outCut{ 1.6f },
-        .range{ 60 }
-    };
-
-    Light light2{
-        .lightPos{ 0, -10, 0 },
-        .type{ LightType::Point },
-        .lightCol{ 0, 0, 1 },
-        .lightStr{ 1 },
-        .lightDir{ 0, 1, 0 },
-        .inCut{ 0.3f },
-        .ambient{ 0.6f },
-        .outCut{ 1.6f },
-        .range{ 60 }
-    };
-    Light light3{
-        .lightPos{ 0, 0, 5 },
-        .type{ LightType::Point },
-        .lightCol{ 1, 0, 0 },
-        .lightStr{ 1 },
-        .lightDir{ 0, 1, 0 },
-        .inCut{ 0.3f },
-        .ambient{ 0.6f },
-        .outCut{ 1.6f },
-        .range{ 60 }
-    };
-
-    lightUniform.lights[0] = light1;
-    lightUniform.lights[1] = light2;
-    lightUniform.lights[2] = light3;
-    lightUniform.numLights = 3;
-    lightUniform.ambient = glm::vec3{ 0.1f };
-
-    struct MaterialUniform {
-        glm::vec4 color;
-        glm::vec2 tiling;
-        glm::vec2 offset;
-        float shininess;
-        glm::vec3 pad;
-    };
-    CHECK_UNIFORM_BOUNDARY(MaterialUniform);
-
-    MaterialUniform materialUniform{
-        .color{ 1, 1, 1, 1 },
-        .tiling{ 4.0f, 4.0f },
-        .offset{ 0.0f, 0.0f },
-        .shininess{ 64.0f }
-    };
-
-
-    Transform transform;
-	transform.scale = glm::vec3{ 3.0f };
+    
+	auto& renderer = Engine::Get().GetRenderer();
 
     //MAIN LOOP
     bool quit = false;
@@ -234,40 +93,17 @@ int main() {
         //SCENE
         scene.Update(dt);
 
-        //lightUniform.lights[0].lightPos = glm::eulerAngleY(time) * glm::vec4{ 0, 0, 10, 1 };
-        //lightUniform.lights[1].lightPos = glm::eulerAngleX(time * 0.5f) * glm::vec4{ 0, 0, 10, 1 };
-
-        //materialUniform.offset.x = time;
-        //materialUniform.tiling = glm::vec2{ 2.0f };
-
-        //TRANSFORMS
-
-        auto cam = scene.GetActorByName("Camera");
-		auto camComp = cam->GetComponent<CameraComponent>();
-	    vertexUniform.cameraPos = cam->GetTransform().position;
-
-        //MVP
-        vertexUniform.model = transform.GetMatrix();
-        vertexUniform.mvp = camComp->GetProjection() * camComp->GetView() * vertexUniform.model;
 
         // RENDER
-        Engine::Get().GetRenderer().BeginFrame();
+        renderer.BeginFrame();
 
-        Engine::Get().GetRenderer().SetPipeline(*pipeline);
+        renderer.SetPipeline(*pipeline);
 
-        Engine::Get().GetRenderer().SetVertexUniform(UniformSlot::Object, &vertexUniform, sizeof(vertexUniform));
-        Engine::Get().GetRenderer().SetVertexUniform(UniformSlot::Light, &lightUniform, sizeof(lightUniform));
-        Engine::Get().GetRenderer().SetVertexUniform(UniformSlot::Material, &materialUniform, sizeof(materialUniform));
+        renderer.SetFragmentTexture(0, *texture);
 
-        Engine::Get().GetRenderer().SetFragmentUniform(UniformSlot::Object, &vertexUniform, sizeof(vertexUniform));
-        Engine::Get().GetRenderer().SetFragmentUniform(UniformSlot::Light, &lightUniform, sizeof(lightUniform));
-        Engine::Get().GetRenderer().SetFragmentUniform(UniformSlot::Material, &materialUniform, sizeof(materialUniform));
+		scene.Draw(renderer);
 
-        Engine::Get().GetRenderer().SetFragmentTexture(0, *texture);
-
-        model->Draw(Engine::Get().GetRenderer());
-
-        Engine::Get().GetRenderer().EndFrame();
+        renderer.EndFrame();
     }
 
     //SHUTDOWN

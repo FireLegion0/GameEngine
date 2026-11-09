@@ -20,8 +20,8 @@ namespace nu {
 	m_owner->SetRotation(glm::vec3(m_pitch, m_yaw, 0.0f));
 
 	glm::vec3 direction{ 0 };
-	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_A)) direction += m_owner->GetTransform().Right();
-	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_D)) direction -= m_owner->GetTransform().Right();
+	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_D)) direction += m_owner->GetTransform().Right();
+	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_A)) direction -= m_owner->GetTransform().Right();
 	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_E)) direction += m_owner->GetTransform().Up();
 	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_Q)) direction -= m_owner->GetTransform().Up();
 	if (Engine::Get().GetInput().GetKeyDown(SDL_SCANCODE_W)) direction += m_owner->GetTransform().Forward();

@@ -70,7 +70,7 @@ namespace nu {
 		//m_pendingActors.clear();
 	}
 
-	void Scene::Draw(const class Renderer& renderer) {
+	void Scene::Draw(const Renderer& renderer) {
 		FrameUniform frameUniform{};
 
 		auto cam = GetActorByName("Camera");
@@ -88,6 +88,7 @@ namespace nu {
 		}
 
 		LightUniform lightUniform{};
+		lightUniform.ambient = glm::vec3( 0.2f );
 
 		auto lights = GetActorByTag("Light");
 		for (auto light : lights)
@@ -95,7 +96,7 @@ namespace nu {
 			auto lightComponent = light->GetComponent<LightComponent>();
 			if (lightComponent)
 			{
-				//lightUniform.lights[lightUniform.count++] = lightComponent->GetLightData();
+				lightUniform.lights[lightUniform.numLights++] = lightComponent->GetLightData();
 			}
 		}
 
