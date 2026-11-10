@@ -93,6 +93,4 @@ namespace nu {
 
 		return Vector2{ (float)(column * m_tileWidth), (float)(row * m_tileHeight) };
 	}
-
-
 }

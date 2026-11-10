@@ -30,8 +30,8 @@ namespace nu
 	{
 		RendererComponent::Read(value);
 
-		JSON_READ_NAME(value, "fov", m_fov);
-		JSON_READ_NAME(value, "near", m_near);
-		JSON_READ_NAME(value, "far", m_far);
+		JSON_READ_NAME_REQ(value, "fov", m_fov);
+		JSON_READ_NAME_REQ(value, "near_plane", m_near);
+		JSON_READ_NAME_REQ(value, "far_plane", m_far);
 	}
 }

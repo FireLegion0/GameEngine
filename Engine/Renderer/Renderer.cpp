@@ -5,6 +5,7 @@
 #include "Pipeline.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "MaterialInstance.h"
 
 #include "Math/Transform.h"
 #include "Math/MathUtils.h"
@@ -31,9 +32,15 @@ namespace nu {
             return false;
         }
 
-		SDL_SetHint(SDL_HINT_GPU_DRIVER, "vulkan");
 		SDL_GPUShaderFormat formats = SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL;
-		m_gpuDevice = SDL_CreateGPUDevice(formats, true, NULL);
+		SDL_SetHint(SDL_HINT_GPU_DRIVER, "vulkan");
+		m_gpuDevice = SDL_CreateGPUDevice(formats, true, nullptr);
+		if (!m_gpuDevice) {
+			std::cerr << "Could not create GPU device: " << SDL_GetError() << std::endl;
+			SDL_DestroyWindow(m_window);
+			SDL_Quit();
+			return false;
+		}
 
 
 		SDL_ClaimWindowForGPUDevice(m_gpuDevice, m_window);
@@ -147,45 +154,7 @@ namespace nu {
 		SDL_RenderLine(m_renderer, x1, y1, x2, y2);
 	}
 
-	//void Renderer::DrawTexture(const Texture& texture, float x, float y, float angle, float scale, bool flipH, const Vector2& origin) const {
-	//	nu::Vector2 size = texture.GetSize();
-
-	//	float cameraX = (m_cameraEnabled) ? (m_camera.x - (m_width * 0.5f)): 0.0f;
-	//	float cameraY = (m_cameraEnabled) ? (m_camera.y - (m_height * 0.5f)): 0.0f;
-
-	//	SDL_FRect destRect;
-	//	destRect.w = size.x * scale;
-	//	destRect.h = size.y * scale;
-
-	//	destRect.x = (x - cameraX) - (destRect.w * origin.x);
-	//	destRect.y = (y - cameraY) - (destRect.h * origin.y);
-
-	//	// https://wiki.libsdl.org/SDL3/SDL_RenderTexture
-	//	SDL_RenderTextureRotated(m_renderer, texture.m_texture, NULL, &destRect, angle, NULL, (flipH) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
-	//}
-
-	//void Renderer::DrawTexture(const Texture& texture, Rect& source, float x, float y, float angle, float scale, bool flipH, const Vector2& origin) const {
-	//	float cameraX = (m_cameraEnabled) ? (m_camera.x - (m_width * 0.5f)) : 0.0f;
-	//	float cameraY = (m_cameraEnabled) ? (m_camera.y - (m_height * 0.5f)) : 0.0f;
-
-	//	SDL_FRect sourceRect;
-	//	sourceRect.x = source.x;
-	//	sourceRect.y = source.y;
-	//	sourceRect.w = source.w;
-	//	sourceRect.h = source.h;
-
-	//	SDL_FRect destRect;
-	//	destRect.w = source.w * scale;
-	//	destRect.h = source.h * scale;
-
-	//	destRect.x = (x - cameraX) - (destRect.w * origin.x);
-	//	destRect.y = (y - cameraY) - (destRect.h * origin.y);
-
-	//	// https://wiki.libsdl.org/SDL3/SDL_RenderTexture
-	//	SDL_RenderTextureRotated(m_renderer, texture.m_texture, &sourceRect, &destRect, angle, NULL, (flipH) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
-	//}
-
-	void Renderer::SetPipeline(const Pipeline& pipeline)
+	void Renderer::SetPipeline(const Pipeline& pipeline) const
 	{
 		// bind the pipeline to the current render pass with SDL_BindGPUGraphicsPipeline(renderPass, gpuPipeline)
 		// the pipeline sets the shaders and render settings used by the draw calls that follow
@@ -294,6 +263,12 @@ namespace nu {
 			.sampler = texture.m_gpuSampler
 		};
 		SDL_BindGPUFragmentSamplers(m_gpuRenderPass, slot, &binding, 1);
+	}
+
+	void Renderer::SetMaterial(const MaterialInstance& material) const
+	{
+		SetPipeline(material.GetMaterial().GetPipeline());
+		material.Bind(m_commandBuffer, m_gpuRenderPass);
 	}
 
 	void Renderer::CreateDepthBuffer()

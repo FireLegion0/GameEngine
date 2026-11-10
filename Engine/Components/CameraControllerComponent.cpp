@@ -36,7 +36,7 @@ namespace nu {
 	void CameraControllerComponent::Read(const json::value_t& value){
 		Component::Read(value);
 
-		JSON_READ_NAME(value, "speed", m_speed);
-		JSON_READ_NAME(value, "sensitivity", m_sensitivity);
+		JSON_READ_NAME_REQ(value, "speed", m_speed);
+		JSON_READ_NAME_REQ(value, "sensitivity", m_sensitivity);
 	}
 }
