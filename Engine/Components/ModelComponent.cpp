@@ -12,6 +12,12 @@ namespace nu
 
 	void ModelComponent::Draw(const Renderer& renderer)
 	{
+		if (!m_model)
+		{
+			std::cerr << "ModelComponent has no model to draw: " << m_owner->GetName() << std::endl;
+			return;
+		}
+
 		ObjectUniform objectUniform{
 			.model = m_owner->GetTransform().GetMatrix(),
 			.normalMatrix = m_owner->GetTransform().GetMatrix(),

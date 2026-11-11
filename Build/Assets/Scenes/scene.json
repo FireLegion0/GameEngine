@@ -61,6 +61,7 @@
       "name": "Ogre",
       "type": "Actor",
       "tag": "Ogre",
+      "active": false,
       "transform": {
         "position": [ 0, 0, 0 ]
       },
@@ -69,6 +70,48 @@
           "type": "ModelComponent",
           "model": "models/ogre.obj",
           "materials": [ "materials/ogre.instance.json" ]
+        }
+      ]
+    },
+    {
+      "name": "Squirrel",
+      "type": "Actor",
+      "tag": "Squirrel",
+      "transform": {
+        "position": [ 2, -1, 0 ],
+        "scale": [ 0.4, 0.4, 0.4 ]
+      },
+      "components": [
+        {
+          "type": "ModelComponent",
+          "model": "models/sphere.obj",
+          "materials": [ "materials/squirrel.instance.json" ]
+        }
+      ]
+    },
+    {
+      "name": "Helmet",
+      "type": "Actor",
+      "transform": {
+        "position": [ 0, 0, 0 ]
+      },
+      "components": [
+        {
+          "type": "ModelComponent",
+          "model": "models/flight-helmet/flighthelmet.gltf"
+        }
+      ]
+    },
+    {
+      "name": "Cubone",
+      "type": "Actor",
+      "transform": {
+        "position": [ 0, 0, 0 ]
+      },
+      "components": [
+        {
+          "type": "ModelComponent",
+          "model": "models/cubone.glb"
         }
       ]
     }
