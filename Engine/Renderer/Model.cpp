@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "Resources/ResourceManager.h"
+#include "Core/File.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -33,7 +34,7 @@ namespace nu
 
 		// todo: start processing the scene from the root node with ProcessNode(node, scene, renderer)
 		// the root node is scene->mRootNode
-		std::string directory = ""; //GetParentDirectory() + "/";
+		std::string directory = GetParentDirectory(filename) + "/";
 		LoadMaterials(scene, directory, renderer);
 
 		ProcessNode(scene->mRootNode, scene, renderer);
